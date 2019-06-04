@@ -1,0 +1,14 @@
+using namespace vex;
+vex::brain Brain;
+vex::motor LeftMotor     (vex::PORT17, vex::gearSetting::ratio18_1, true);
+vex::motor RightMotor    (vex::PORT16, vex::gearSetting::ratio18_1, false);
+vex::vision::signature ORANGE_CUBE (1, 5939, 7823, 6881, -2185, -1163, -1674, 1.1, 0);
+vex::vision::signature PURPLE_CUBE (2, 475, 1911, 1193, 3029, 6229, 4629, 1.3, 0);
+vex::vision::signature GREEN_CUBE (3, -6109, -4449, -5279, -3663, -1873, -2768, 1.5, 0);
+vex::vision::signature SIG_4 (4, 0, 0, 0, 0, 0, 0, 3, 0);
+vex::vision::signature SIG_5 (5, 0, 0, 0, 0, 0, 0, 3, 0);
+vex::vision::signature SIG_6 (6, 0, 0, 0, 0, 0, 0, 3, 0);
+vex::vision::signature SIG_7 (7, 0, 0, 0, 0, 0, 0, 3, 0);
+vex::vision VisionSensor (vex::PORT10, 85, ORANGE_CUBE, PURPLE_CUBE, GREEN_CUBE, SIG_4, SIG_5, SIG_6, SIG_7);
+vex::sonar Sonar = vex::sonar(Brain.ThreeWirePort.G);
+vex::controller Controller = vex::controller();
