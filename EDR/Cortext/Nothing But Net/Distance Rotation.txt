@@ -1,0 +1,113 @@
+void rotate()
+{
+	// Clear left and right encoders
+	nMotorEncoder[rightFrontMotor] = 0;			// or resetMotorEncoder[rightFrontMotor];
+	nMotorEncoder[rightRearMotor] = 0;
+	nMotorEncoder[leftFrontMotor] = 0;
+	nMotorEncoder[leftRearMotor] = 0;
+
+	// ********************** With the Integrated Encoders, one full rotation equals 627 counts.
+
+	int value = 250;
+	// Power motors while all motors are less than value
+	while( ((nMotorEncoder[leftRearMotor] < value) && (nMotorEncoder[leftFrontMotor]) < value) &&
+		((nMotorEncoder[rightFrontMotor] < value) && (nMotorEncoder[rightRearMotor]) < value))
+	{
+		motor[rightFrontMotor] = 100;
+		motor[rightRearMotor] = 100;
+
+		motor[leftFrontMotor] = -100;
+		motor[leftRearMotor] = -100;
+	}
+
+	// Turn motors off
+	motor[rightFrontMotor] = 0;
+	motor[rightRearMotor] = 0;
+	motor[leftFrontMotor] = 0;
+	motor[leftRearMotor] = 0;
+
+}
+
+void drive(int value, int power)
+{
+	// Clear left and right encoders
+	nMotorEncoder[rightFrontMotor] = 0;			// or resetMotorEncoder[rightFrontMotor];
+	nMotorEncoder[rightRearMotor] = 0;
+	nMotorEncoder[leftFrontMotor] = 0;
+	nMotorEncoder[leftRearMotor] = 0;
+
+	// ********************** With the Integrated Encoders, one full rotation equals 627 counts.
+
+	// Power motors while all motors are less than value
+	while( ((nMotorEncoder[leftRearMotor] < value) && (nMotorEncoder[leftFrontMotor]) < value) &&
+		((nMotorEncoder[rightFrontMotor] < value) && (nMotorEncoder[rightRearMotor]) < value))
+	{
+		motor[rightFrontMotor] = power;
+		motor[rightRearMotor] = power;
+
+		motor[leftFrontMotor] = power;
+		motor[leftRearMotor] = power;
+	}
+
+	// Turn motors off
+	motor[rightFrontMotor] = 0;
+	motor[rightRearMotor] = 0;
+	motor[leftFrontMotor] = 0;
+	motor[leftRearMotor] = 0;
+}
+
+void pre_auton()
+{
+	// Set bStopTasksBetweenModes to false if you want to keep user created tasks running between
+	// Autonomous and Tele-Op modes. You will need to manage all user created tasks if set to false.
+	bStopTasksBetweenModes = true;
+
+	// All activities that occur before the competition starts
+	// Example: clearing encoders, setting servo positions, ...
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                 Autonomous Task
+//
+// This task is used to control your robot during the autonomous phase of a VEX Competition.
+// You must modify the code to add your own robot specific commands here.
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
+task autonomous()
+{
+	motor[launcherLeftMotor] = 65;
+	motor[launcherRightMotor] = 65;
+
+	wait1Msec(1000);
+	drive(100, 100);
+
+	rotate();
+
+	wait1Msec(5000);
+
+	motor[intakeMotor] = 127;
+	wait1Msec(1000);
+	motor[intakeMotor] = 0;
+
+	motor[intakeMotor] = 127;
+	wait1Msec(1000);
+	motor[intakeMotor] = 0;
+
+	motor[intakeMotor] = 127;
+	wait1Msec(1000);
+	motor[intakeMotor] = 0;
+
+	motor[intakeMotor] = 127;
+
+	wait1Msec(10000);
+
+								//...suck in balls.
+	motor[beltMotor] = 127;
+
+	drive(2000, 100);
+		wait1Msec(1000);
+			drive(-2000, -100);
+
+}

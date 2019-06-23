@@ -1,0 +1,28 @@
+ //Completely clear out any previous sensor readings by setting the port to "sensorNone"
+ SensorType[in8] = sensorNone;
+ wait1Msec(1000);
+ //Reconfigure Analog Port 8 as a Gyro sensor and allow time for ROBOTC to calibrate it
+ SensorType[in8] = sensorGyro;
+ wait1Msec(2000);
+ 
+//Adjust SensorScale to correct the scaling for your gyro
+ //SensorScale[in8] = 260;
+ //Adjust SensorFullCount to set the "rollover" point. 3600 sets the rollover point to +/-3600
+ //SensorFullCount[in8] = 3600;
+ 
+//Specify the number of degrees for the robot to turn (1 degree = 10, or 900 = 90 degrees)
+ int degrees10 = 900;
+ 
+//While the absolute value of the gyro is less than the desired rotation...
+ while(abs(SensorValue[in8]) < degrees10)
+ {
+ //...continue turning
+ motor[rightMotor] = 25;
+ motor[leftMotor] = -25;
+ }
+ 
+//Brief brake to stop some drift
+ motor[rightMotor] = -5;
+ motor[leftMotor] = 5;
+ wait1Msec(250);
+ }
