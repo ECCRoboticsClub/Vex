@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 
+int chose();
 
 int main(void) {
 	int n=1;
@@ -20,17 +21,7 @@ int main(void) {
 			RM2.spin(vex::directionType::fwd, Controller1.Axis2.value()  + Controller1.Axis1.value(), vex::velocityUnits::pct);
 			RM1.spin(vex::directionType::fwd, Controller1.Axis2.value()  - Controller1.Axis1.value(), vex::velocityUnits::pct);
 
-			if(Controller1.ButtonA.pressing()){
-				n=2;
-			}
-			if(Controller1.ButtonX.pressing()){
-				n=1;
-
-			}
-			if(Controller1.ButtonB.pressing()){
-				n=3;
-
-			}
+			n=chose();
 		}
 		//press a for normal drive
 
@@ -41,17 +32,7 @@ int main(void) {
 			RM2.spin(vex::directionType::fwd, Controller1.Axis2.value() - Controller1.Axis1.value() , vex::velocityUnits::pct);
 			RM1.spin(vex::directionType::fwd, Controller1.Axis2.value() - Controller1.Axis1.value() , vex::velocityUnits::pct);
 
-			if(Controller1.ButtonA.pressing()){
-				n=2;
-			}
-			if(Controller1.ButtonX.pressing()){
-				n=1;
-
-			}
-			if(Controller1.ButtonB.pressing()){
-				n=3;
-
-			}
+			n=chose();
 		}
 		while (n==3){
 			leftright = Controller1.Axis1.position( vex::percentUnits::pct);
@@ -64,17 +45,7 @@ int main(void) {
 			RM2.spin(vex::directionType::fwd, updown - leftright , vex::velocityUnits::pct);
 			RM1.spin(vex::directionType::fwd, updown - leftright , vex::velocityUnits::pct);
 
-			if(Controller1.ButtonA.pressing()){
-				n=2;
-			}
-			if(Controller1.ButtonX.pressing()){
-				n=1;
-
-			}
-			if(Controller1.ButtonB.pressing()){
-				n=3;
-
-			}
+			n=chose();
 		}
 
 	}
@@ -94,3 +65,22 @@ lm2 rev     LM1 FWD
 rm1 rev
 rm2 fwd
 */
+
+
+int chose()
+{
+	int t;
+	
+	if(Controller1.ButtonA.pressing()){
+				t= 2;
+			}
+			if(Controller1.ButtonX.pressing()){
+				t= 1
+
+			}
+			if(Controller1.ButtonB.pressing()){
+				t= 3;
+
+			}
+	return t;
+}
