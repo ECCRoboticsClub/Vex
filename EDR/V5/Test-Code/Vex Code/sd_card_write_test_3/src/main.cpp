@@ -24,29 +24,32 @@ vex::controller con(vex::controllerType::primary);
 #include <fstream>
 
 bool fexists(const char *filename) {
-  std::ifstream ifile(filename);
-  return (bool)ifile;
+	std::ifstream ifile(filename);
+	return (bool)ifile;
 }
 std::ofstream ofs;
 
 int main() {
-    if( Brain.SDcard.isInserted() ) {
-      if(fexists("run.csv")){
-        Brain.Screen.printAt(10, 40, "need a new file");
-      }
-      else {
-      
-      
-      // create a file with long filename
-      ofs.open("Run.csv", std::ofstream::out);
-      ofs << "time,battery,,motor1,,,,,,,,\r\n";
-      ofs << "senors,capacity,temperature,Position,Velocity (calculated),Current,Voltage,Power,Torque (calculated),Efficiency (calculated)\r\n";
+	if( Brain.SDcard.isInserted() ) {
+		if(fexists("run3.csv")){
+			Brain.Screen.printAt(10, 40, "need a new file");
+		}
+		else{
+			// create a file with long filename
+			ofs.open("Run3.csv", std::ofstream::out);
+			ofs << "time,battery,,motor1,,,,,,,,\r\n";
+			ofs << "senors,capacity,temperature,Position,Velocity (calculated),Current,Voltage,Power,Torque (calculated),Efficiency (calculated)\r\n";
+			for(int i=1; i<=6; i++){
+				ofs << Brain.timer(msec) << "," << Brain.Battery.capacity() << "," << Brain.Battery.temperature() << "," << i + 8 << "," << i * 3 << "," << i * i << "," << i + 1 << "," << i *i *i << "," << i << "," << i-5 <<"\n";
+vex::task::sleep(1);
+			}
       ofs.close();
+			Brain.Screen.printAt(10, 40, "done");
+		}
 
-      Brain.Screen.printAt(10, 40, "done");
-      }
-    }
-    else {
-      Brain.Screen.printAt(10, 40, "No SD Card");        
-    }
+	}
+
+	else {
+		Brain.Screen.printAt(10, 40, "No SD Card");
+	}
 }

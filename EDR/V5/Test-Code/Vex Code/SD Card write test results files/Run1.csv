@@ -1,0 +1,8 @@
+time,battery,,motor1,,,,,,,,
+senors,capacity,temperature,Position,Velocity (calculated),Current,Voltage,Power,Torque (calculated),Efficiency (calculated)
+212,41,0.14,9,3,1,2,1,1,-4
+212,41,0.14,10,6,4,3,8,2,-3
+212,41,0.14,11,9,9,4,27,3,-2
+212,41,0.14,12,12,16,5,64,4,-1
+212,41,0.14,13,15,25,6,125,5,0
+212,41,0.14,14,18,36,7,216,6,1

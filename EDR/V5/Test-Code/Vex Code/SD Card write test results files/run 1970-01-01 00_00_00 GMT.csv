@@ -1,0 +1,2 @@
+time,battery,,motor1,,,,,,,,
+sensors,capacity,temperature,Position,Velocity (calculated),Current,Voltage,Power,Torque (calculated),Efficiency (calculated)
