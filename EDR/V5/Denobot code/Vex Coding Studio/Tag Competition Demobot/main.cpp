@@ -87,8 +87,8 @@ void usercontrol( void )
 			else
 			{
 
-				FrontRightMotor.stop(vex::brakeType::brake);
-				BackRightMotor.stop(vex::brakeType::brake);
+				RightMotor.stop(vex::brakeType::brake);
+				LeftMotor.stop(vex::brakeType::brake);
 				while (1)
 				{
 					Controller1.Screen.clearScreen();
@@ -159,37 +159,33 @@ void tankDrive(int threshold, int speed){
 
 	if(abs(Controller1.Axis3.value()) > threshold)         // If the left joystick is greater than or less than the threshold:
 	{
-		FrontLeftMotor.spin(vex::directionType::fwd, Controller1.Axis3.value()/speed, vex::velocityUnits::pct);
-		BackLeftMotor.spin(vex::directionType::fwd, Controller1.Axis3.value()/speed, vex::velocityUnits::pct);
+		LeftMotor.spin(vex::directionType::fwd, Controller1.Axis3.value()/speed, vex::velocityUnits::pct);
 		// Left Joystick Y value / speed.
 	}
 	else                                    // If the left joystick is within the threshold:
 	{
-		FrontLeftMotor.stop(vex::brakeType::brake);
-		BackLeftMotor.stop(vex::brakeType::brake);
+		LeftMotor.stop(vex::brakeType::brake);
+
 		// Stop the left motor (cancel noise)
 	}
 
 	if(abs(Controller1.Axis2.value()) > threshold)         // If the right joystick is greater than or less than the threshold:
 	{
-		FrontRightMotor.spin(vex::directionType::fwd, Controller1.Axis2.value()/speed, vex::velocityUnits::pct);
-		BackRightMotor.spin(vex::directionType::fwd, Controller1.Axis2.value()/speed, vex::velocityUnits::pct);
+		RightMotor.spin(vex::directionType::fwd, Controller1.Axis2.value()/speed, vex::velocityUnits::pct);
 		// Right Joystick Y value / 2.
 	}
 	else                                    // If the right joystick is within the threshold:
 	{
-		FrontRightMotor.stop(vex::brakeType::brake);
-		BackRightMotor.stop(vex::brakeType::brake);             // Stop the right motor (cancel noise)
+		RightMotor.stop(vex::brakeType::brake);
+		// Stop the right motor (cancel noise)
 	}
 }
 
 void arcadeDrive(int threshold, int speed)
 {
-	FrontLeftMotor.spin(vex::directionType::fwd, (Controller1.Axis3.value() + Controller1.Axis4.value())/speed, vex::velocityUnits::pct); //(Axis3+Axis4)/speed
-	FrontRightMotor.spin(vex::directionType::fwd, (Controller1.Axis3.value() - Controller1.Axis4.value())/speed, vex::velocityUnits::pct);//(Axis3-Axis4)/speed
-	BackLeftMotor.spin(vex::directionType::fwd, (Controller1.Axis3.value() + Controller1.Axis4.value())/speed, vex::velocityUnits::pct); //(Axis3+Axis4)/speed
-	BackRightMotor.spin(vex::directionType::fwd, (Controller1.Axis3.value() - Controller1.Axis4.value())/speed, vex::velocityUnits::pct);//(Axis3-Axis4)/speed
-}
+	LeftMotor.spin(vex::directionType::fwd, (Controller1.Axis3.value() + Controller1.Axis4.value())/speed, vex::velocityUnits::pct); //(Axis3+Axis4)/speed
+	RightMotor.spin(vex::directionType::fwd, (Controller1.Axis3.value() - Controller1.Axis4.value())/speed, vex::velocityUnits::pct);//(Axis3-Axis4)/speed
+	}
 
 int speedControl()
 {
