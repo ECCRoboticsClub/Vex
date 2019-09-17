@@ -3,7 +3,7 @@
 /*    Module:       main.cpp                                                  */
 /*    Author:       C:\Users\brandon                                          */
 /*    Created:      Sun Aug 11 2019                                           */
-/*    Description:  V5 project                                                */
+/*    Description:  sd_card_write_test_2-make new file per run                                             */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 #include "vex.h"
@@ -18,23 +18,38 @@ vex::controller con(vex::controllerType::primary);
 
 
 #include <cstdio>
-#include <iostream>
+#include <sstream>
 #include <iomanip>
 #include <fstream>
-
+#include <string>   
+using namespace std; 
 std::ofstream ofs;
+bool fexists(const char *filename);
 
 int main() {
+	int counter = 1; 
     if( Brain.SDcard.isInserted() ) {
       // create a file with long filename
-      ofs.open("Run.csv", std::ofstream::out);
+	  std::string filemw = "run(";
+	  string nm = filemw + to_string(counter) + ").csv";
+	  if (fexists(nm)){
+	  counter++;
+	  }
+	  else {
+		  Brain.Screen.printAt(10, 40, nm);
+      ofs.open(nm, std::ofstream::out);
       ofs << "time,battery,,motor1,,,,,,,,\r\n";
       ofs << "senors,capacity,temperature,Position,Velocity (calculated),Current,Voltage,Power,Torque (calculated),Efficiency (calculated)\r\n";
       ofs.close();
 
-      Brain.Screen.printAt(10, 40, "done");
+      }
     }
     else {
       Brain.Screen.printAt(10, 40, "No SD Card");        
     }
+}
+
+bool fexists(const char *filename) {
+  std::ifstream ifile(filename);
+  return (bool)ifile;
 }
