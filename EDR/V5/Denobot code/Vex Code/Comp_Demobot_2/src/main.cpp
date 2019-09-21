@@ -19,29 +19,29 @@ void arcadeDrive(int threshold, int speed);
 int speedControl();
 void teamColor(int flagRed);
 int driveChoose();
-void drive();
+void drivecon(int drive);
 void sensorHeader();
 void sensorWriter();
 void Batterydata();
 void competitionDate();
 void controller1Data();
-void motor1Data();
-void motor2Data();
-void motor3Data();
-void motor4Data();
+void FrontLeftMotorData();
+void BackLeftMotorData();
+void FrontRightMotorData();
+void BackRightMotorData();
 void BatteryHeader();
 void competitionHeader();
 void controller1Header();
-void motor1Header();
-void motor2Header();
-void motor3Header();
-void motor4Header();
+void FrontLeftMotorHeader();
+void BackLeftMotorHeader();
+void FrontRightMotorHeader();
+void BackRightMotorHeader();
 void BatteryHeader2();
 void competitionHeader2();
 void controllerHeader2();
 void motorHeader2();
 void stopmotor();
-
+bool SDflag;
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
@@ -60,6 +60,7 @@ void pre_auton(void) {
     // create a file with long filename
     ofs.open("Run.csv", std::ofstream::out);
     sensorHeader();
+    SDflag = 1;
   }
 }
 
@@ -107,6 +108,11 @@ void usercontrol(void) {
       drive = driveChoose();
       while (Controller1.ButtonRight.pressing() == 0) {
 
+        if (SDflag == 1) {
+
+          sensorWriter();
+        }
+        drivecon(drive);
         vex::task::sleep(50);
       }
     }
@@ -135,6 +141,7 @@ int main()
 }
 
 void teamColor(int flagRed) {
+
   if (flagRed == 1) {
     Brain.Screen.clearScreen(vex::color::red);
     Controller1.Screen.setCursor(2, 1);
@@ -149,8 +156,13 @@ void teamColor(int flagRed) {
     Controller1.Screen.print("Green Bot");
   } else {
     Brain.Screen.clearScreen(vex::color::yellow);
+
     Controller1.Screen.setCursor(2, 1);
     Controller1.Screen.print("Yellow Bot");
+  }
+  if (SDflag == 0) {
+    Brain.Screen.setCursor(1, 1);
+    Brain.Screen.print("No SD Card");
   }
 }
 
@@ -230,7 +242,11 @@ int driveChoose() {
     return 1;
 }
 
-void drive(int drive) {
+void drivecon(int drive) {
+  if (SDflag == 0) {
+    Controller1.Screen.setCursor(3, 1);
+    Controller1.Screen.print("No SD Card");
+  }
   if (drive == 1) {
     tankDrive(0, speedControl());
     Controller1.Screen.setCursor(1, 1);
@@ -247,16 +263,16 @@ void sensorHeader() {
   BatteryHeader();
   competitionHeader();
   controller1Header();
-  motor1Header();
-  motor2Header();
-  motor3Header();
-  motor4Header();
+  FrontLeftMotorHeader();
+  BackLeftMotorHeader();
+  FrontRightMotorHeader();
+  BackRightMotorHeader();
 
   ofs << "\n";
   ofs << "senors,";
   BatteryHeader2();
- // controllerHeader2();
-  for (int n = 20; n > 0; n--) {
+  controllerHeader2();
+  for (int n = 4; n > 0; n--) {
     motorHeader2();
   }
   ofs << "\n";
@@ -269,39 +285,44 @@ void sensorWriter() {
   Batterydata();
   competitionDate();
   controller1Data();
-  motor1Data();
-  motor2Data();
-  motor3Data();
-  motor4Data();
+  FrontLeftMotorData();
+  BackLeftMotorData();
+  FrontRightMotorData();
+  BackRightMotorData();
 
   ofs << "\n";
 }
 
 void Batterydata() {
   ofs << Brain.Battery.capacity(vex::percentUnits::pct) << ","
-      << Brain.Battery.temperature(vex::temperatureUnits::fahrenheit) << ",";
+      << Brain.Battery.temperature(vex::temperatureUnits::fahrenheit);
 }
 
 void competitionDate() {
-  ofs << Competition.isAutonomous() << "," << Competition.isDriverControl()
+  ofs << "," << Competition.isAutonomous() << "," << Competition.isDriverControl()
       << Competition.isCompetitionSwitch() << ","
-      << Competition.isFieldControl() << Competition.isEnabled() << ",";
+      << Competition.isFieldControl() << Competition.isEnabled();
 }
 
 void controller1Data() {
-  ofs << con.Axis1.position() << "," << con.Axis1.value() << ","
-      << con.Axis2.position() << "," << con.Axis2.value() << ","
-      << con.Axis3.position() << "," << con.Axis3.value() << ","
-      << con.Axis4.position() << "," << con.Axis4.value() << ","
-      << con.ButtonA.pressing() << "," << con.ButtonB.pressing() << ","
-      << con.ButtonX.pressing() << "," << con.ButtonY.pressing() << ","
-      << con.ButtonUp.pressing() << "," << con.ButtonDown.pressing() << ","
-      << con.ButtonLeft.pressing() << "," << con.ButtonRight.pressing() << ","
-      << con.ButtonL1.pressing() << "," << con.ButtonL2.pressing() << ","
-      << con.ButtonR1.pressing() << "," << con.ButtonR2.pressing();
+  ofs << "," << Controller1.Axis1.position() << "," << Controller1.Axis1.value() << ","
+      << Controller1.Axis2.position() << "," << Controller1.Axis2.value() << ","
+      << Controller1.Axis3.position() << "," << Controller1.Axis3.value() << ","
+      << Controller1.Axis4.position() << "," << Controller1.Axis4.value() << ","
+      << Controller1.ButtonA.pressing() << "," << Controller1.ButtonB.pressing()
+      << "," << Controller1.ButtonX.pressing() << ","
+      << Controller1.ButtonY.pressing() << ","
+      << Controller1.ButtonUp.pressing() << ","
+      << Controller1.ButtonDown.pressing() << ","
+      << Controller1.ButtonLeft.pressing() << ","
+      << Controller1.ButtonRight.pressing() << ","
+      << Controller1.ButtonL1.pressing() << ","
+      << Controller1.ButtonL2.pressing() << ","
+      << Controller1.ButtonR1.pressing() << ","
+      << Controller1.ButtonR2.pressing();
 }
 
-void motor1Data() {
+void FrontLeftMotorData() {
   ofs << "," << FrontLeftMotor.efficiency(vex::percentUnits::pct) << ","
       << FrontLeftMotor.velocity(vex::velocityUnits::rpm) << ","
       << FrontLeftMotor.velocity(vex::velocityUnits::dps) << ","
@@ -317,52 +338,52 @@ void motor1Data() {
       << FrontLeftMotor.temperature(vex::percentUnits::pct);
 }
 
-void motor2Data() {
-  ofs << "," << motor2.efficiency(vex::percentUnits::pct) << ","
-      << motor2.velocity(vex::velocityUnits::rpm) << ","
-      << motor2.velocity(vex::velocityUnits::dps) << ","
-      << motor2.velocity(vex::velocityUnits::pct) << ","
-      << motor2.rotation(vex::rotationUnits::deg) << ","
-      << motor2.rotation(vex::rotationUnits::rev) << ","
-      << motor2.rotation(vex::rotationUnits::raw) << ","
-      << motor2.torque(vex::torqueUnits::Nm) << ","
-      << motor2.torque(vex::torqueUnits::InLb) << ","
-      << motor2.current(vex::currentUnits::amp) << ","
-      << motor2.power(vex::powerUnits::watt) << ","
-      << motor2.temperature(vex::temperatureUnits::fahrenheit) << ","
-      << motor2.temperature(vex::percentUnits::pct);
+void BackLeftMotorData() {
+  ofs << "," << BackLeftMotor.efficiency(vex::percentUnits::pct) << ","
+      << BackLeftMotor.velocity(vex::velocityUnits::rpm) << ","
+      << BackLeftMotor.velocity(vex::velocityUnits::dps) << ","
+      << BackLeftMotor.velocity(vex::velocityUnits::pct) << ","
+      << BackLeftMotor.rotation(vex::rotationUnits::deg) << ","
+      << BackLeftMotor.rotation(vex::rotationUnits::rev) << ","
+      << BackLeftMotor.rotation(vex::rotationUnits::raw) << ","
+      << BackLeftMotor.torque(vex::torqueUnits::Nm) << ","
+      << BackLeftMotor.torque(vex::torqueUnits::InLb) << ","
+      << BackLeftMotor.current(vex::currentUnits::amp) << ","
+      << BackLeftMotor.power(vex::powerUnits::watt) << ","
+      << BackLeftMotor.temperature(vex::temperatureUnits::fahrenheit) << ","
+      << BackLeftMotor.temperature(vex::percentUnits::pct);
 }
 
-void motor3Data() {
-  ofs << "," << motor3.efficiency(vex::percentUnits::pct) << ","
-      << motor3.velocity(vex::velocityUnits::rpm) << ","
-      << motor3.velocity(vex::velocityUnits::dps) << ","
-      << motor3.velocity(vex::velocityUnits::pct) << ","
-      << motor3.rotation(vex::rotationUnits::deg) << ","
-      << motor3.rotation(vex::rotationUnits::rev) << ","
-      << motor3.rotation(vex::rotationUnits::raw) << ","
-      << motor3.torque(vex::torqueUnits::Nm) << ","
-      << motor3.torque(vex::torqueUnits::InLb) << ","
-      << motor3.current(vex::currentUnits::amp) << ","
-      << motor3.power(vex::powerUnits::watt) << ","
-      << motor3.temperature(vex::temperatureUnits::fahrenheit) << ","
-      << motor3.temperature(vex::percentUnits::pct);
+void FrontRightMotorData() {
+  ofs << "," << FrontRightMotor.efficiency(vex::percentUnits::pct) << ","
+      << FrontRightMotor.velocity(vex::velocityUnits::rpm) << ","
+      << FrontRightMotor.velocity(vex::velocityUnits::dps) << ","
+      << FrontRightMotor.velocity(vex::velocityUnits::pct) << ","
+      << FrontRightMotor.rotation(vex::rotationUnits::deg) << ","
+      << FrontRightMotor.rotation(vex::rotationUnits::rev) << ","
+      << FrontRightMotor.rotation(vex::rotationUnits::raw) << ","
+      << FrontRightMotor.torque(vex::torqueUnits::Nm) << ","
+      << FrontRightMotor.torque(vex::torqueUnits::InLb) << ","
+      << FrontRightMotor.current(vex::currentUnits::amp) << ","
+      << FrontRightMotor.power(vex::powerUnits::watt) << ","
+      << FrontRightMotor.temperature(vex::temperatureUnits::fahrenheit) << ","
+      << FrontRightMotor.temperature(vex::percentUnits::pct);
 }
 
-void motor4Data() {
-  ofs << "," << motor4.efficiency(vex::percentUnits::pct) << ","
-      << motor4.velocity(vex::velocityUnits::rpm) << ","
-      << motor4.velocity(vex::velocityUnits::dps) << ","
-      << motor4.velocity(vex::velocityUnits::pct) << ","
-      << motor4.rotation(vex::rotationUnits::deg) << ","
-      << motor4.rotation(vex::rotationUnits::rev) << ","
-      << motor4.rotation(vex::rotationUnits::raw) << ","
-      << motor4.torque(vex::torqueUnits::Nm) << ","
-      << motor4.torque(vex::torqueUnits::InLb) << ","
-      << motor4.current(vex::currentUnits::amp) << ","
-      << motor4.power(vex::powerUnits::watt) << ","
-      << motor4.temperature(vex::temperatureUnits::fahrenheit) << ","
-      << motor4.temperature(vex::percentUnits::pct);
+void BackRightMotorData() {
+  ofs << "," << BackRightMotor.efficiency(vex::percentUnits::pct) << ","
+      << BackRightMotor.velocity(vex::velocityUnits::rpm) << ","
+      << BackRightMotor.velocity(vex::velocityUnits::dps) << ","
+      << BackRightMotor.velocity(vex::velocityUnits::pct) << ","
+      << BackRightMotor.rotation(vex::rotationUnits::deg) << ","
+      << BackRightMotor.rotation(vex::rotationUnits::rev) << ","
+      << BackRightMotor.rotation(vex::rotationUnits::raw) << ","
+      << BackRightMotor.torque(vex::torqueUnits::Nm) << ","
+      << BackRightMotor.torque(vex::torqueUnits::InLb) << ","
+      << BackRightMotor.current(vex::currentUnits::amp) << ","
+      << BackRightMotor.power(vex::powerUnits::watt) << ","
+      << BackRightMotor.temperature(vex::temperatureUnits::fahrenheit) << ","
+      << BackRightMotor.temperature(vex::percentUnits::pct);
 }
 
 void BatteryHeader2() { ofs << "capacity,temperature,"; }
@@ -392,14 +413,14 @@ void BatteryHeader() { ofs << "Battery,,"; }
 void competitionHeader() { ofs << "Competition,,,,,"; }
 void controller1Header() { ofs << "Controller1,,,,,,,,,,,,,,,,,,,,"; }
 
-void motor1Header() { ofs << "FrontLeftMotor,,,,,,,,,,,,,"; }
-void motor2Header() { ofs << "Motor2,,,,,,,,,,,,,"; }
-void motor3Header() { ofs << "Motor3,,,,,,,,,,,,,"; }
-void motor4Header() { ofs << "Motor4,,,,,,,,,,,,,"; }
+void FrontLeftMotorHeader() { ofs << "FrontLeftMotor,,,,,,,,,,,,,"; }
+void BackLeftMotorHeader() { ofs << "BackLeftMotor,,,,,,,,,,,,,"; }
+void FrontRightMotorHeader() { ofs << "FrontRightMotor,,,,,,,,,,,,,"; }
+void BackRightMotorHeader() { ofs << "BackRightMotor,,,,,,,,,,,,,"; }
 
 void stopmotor() {
   FrontLeftMotor.stop();
-  motor2.stop();
-  motor3.stop();
-  motor4.stop();
+  BackLeftMotor.stop();
+  FrontRightMotor.stop();
+  BackRightMotor.stop();
 }
