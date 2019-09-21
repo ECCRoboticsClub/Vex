@@ -95,6 +95,7 @@ void BatteryHeader2();
 void competitionHeader2();
 void controllerHeader2();
 void motorHeader2();
+void stopmotor();
 
 vex::competition Competition;
 std::ofstream ofs;
@@ -103,7 +104,7 @@ int main() {
   if (Brain.SDcard.isInserted()) {
     // create a file with long filename
     ofs.open("Run.csv", std::ofstream::out);
-sensorHeader();
+    sensorHeader();
     while (true) {
 
       sensorWriter();
@@ -112,8 +113,8 @@ sensorHeader();
 
       drive();
 
-      if (con.ButtonB.pressing() == 1 && con.ButtonX.pressing() == 1 &&
-          con.ButtonUp.pressing() == 1 && con.ButtonDown.pressing() == 1 &&
+      if (/*con.ButtonB.pressing() == 1 && con.ButtonX.pressing() == 1 &&
+          con.ButtonUp.pressing() == 1 && con.ButtonDown.pressing() == 1 &&*/
           con.ButtonL1.pressing() == 1 && con.ButtonL2.pressing() == 1 &&
           con.ButtonR2.pressing() == 1 && con.ButtonR1.pressing() == 1) {
         break;
@@ -122,23 +123,59 @@ sensorHeader();
 
     ofs.close();
     Brain.Screen.printAt(10, 40, "done");
-    motor1.stop();
-    motor2.stop();
+    stopmotor();
   } else {
     Brain.Screen.printAt(10, 40, "No SD Card");
   }
 }
 
 void drive() {
-  motor1.spin(vex::directionType::fwd, con.Axis3.value(),
-              vex::velocityUnits::pct);
-  motor2.spin(vex::directionType::fwd, con.Axis2.value(),
-              vex::velocityUnits::pct);
+  motor1.setVelocity(100, vex::velocityUnits::pct);
+  motor2.setVelocity(100, vex::velocityUnits::pct);
+  motor3.setVelocity(100, vex::velocityUnits::pct);
+  motor4.setVelocity(100, vex::velocityUnits::pct);
+  motor5.setVelocity(100, vex::velocityUnits::pct);
+  motor6.setVelocity(100, vex::velocityUnits::pct);
+  motor7.setVelocity(100, vex::velocityUnits::pct);
+  motor8.setVelocity(100, vex::velocityUnits::pct);
+  motor9.setVelocity(100, vex::velocityUnits::pct);
+  motor10.setVelocity(100, vex::velocityUnits::pct);
+  motor11.setVelocity(100, vex::velocityUnits::pct);
+  motor12.setVelocity(100, vex::velocityUnits::pct);
+  motor13.setVelocity(100, vex::velocityUnits::pct);
+  motor14.setVelocity(100, vex::velocityUnits::pct);
+  motor15.setVelocity(100, vex::velocityUnits::pct);
+  motor16.setVelocity(100, vex::velocityUnits::pct);
+  motor17.setVelocity(100, vex::velocityUnits::pct);
+  motor18.setVelocity(100, vex::velocityUnits::pct);
+  motor19.setVelocity(100, vex::velocityUnits::pct);
+  motor20.setVelocity(100, vex::velocityUnits::pct);
+
+  motor1.spin(vex::directionType::fwd);
+  motor2.spin(vex::directionType::fwd);
+  motor3.spin(vex::directionType::fwd);
+  motor4.spin(vex::directionType::fwd);
+  motor5.spin(vex::directionType::fwd);
+  motor6.spin(vex::directionType::fwd);
+  motor7.spin(vex::directionType::fwd);
+  motor8.spin(vex::directionType::fwd);
+  motor9.spin(vex::directionType::fwd);
+  motor10.spin(vex::directionType::fwd);
+  motor11.spin(vex::directionType::fwd);
+  motor12.spin(vex::directionType::fwd);
+  motor13.spin(vex::directionType::fwd);
+  motor14.spin(vex::directionType::fwd);
+  motor15.spin(vex::directionType::fwd);
+  motor16.spin(vex::directionType::fwd);
+  motor17.spin(vex::directionType::fwd);
+  motor18.spin(vex::directionType::fwd);
+  motor19.spin(vex::directionType::fwd);
+  motor20.spin(vex::directionType::fwd);
 }
 void sensorHeader() {
   ofs << "time (msec),";
   BatteryHeader();
-  controller1Header();
+  //controller1Header();
   motor1Header();
   motor2Header();
   motor3Header();
@@ -162,7 +199,7 @@ void sensorHeader() {
   ofs << "\n";
   ofs << "senors,";
   BatteryHeader2();
-  controllerHeader2();
+ // controllerHeader2();
   for (int n = 20; n > 0; n--) {
     motorHeader2();
   }
@@ -174,8 +211,8 @@ void sensorWriter() {
   ofs << Brain.timer(vex::timeUnits::msec) << ",";
 
   Batterydata();
-  competitionDate();
-  controller1Data();
+  //competitionDate();
+  //controller1Data();
   motor1Data();
   motor2Data();
   motor3Data();
@@ -603,3 +640,26 @@ void motor17Header() { ofs << "Motor17,,,,,,,,,,,,,"; }
 void motor18Header() { ofs << "Motor18,,,,,,,,,,,,,"; }
 void motor19Header() { ofs << "Motor19,,,,,,,,,,,,,"; }
 void motor20Header() { ofs << "Motor20,,,,,,,,,,,,,"; }
+
+void stopmotor() {
+  motor1.stop();
+  motor2.stop();
+  motor3.stop();
+  motor4.stop();
+  motor5.stop();
+  motor6.stop();
+  motor7.stop();
+  motor8.stop();
+  motor9.stop();
+  motor10.stop();
+  motor11.stop();
+  motor12.stop();
+  motor13.stop();
+  motor14.stop();
+  motor15.stop();
+  motor16.stop();
+  motor17.stop();
+  motor18.stop();
+  motor19.stop();
+  motor20.stop();
+}
