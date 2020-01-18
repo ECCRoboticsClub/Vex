@@ -66,9 +66,25 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+  int slow=100;
+  LM2.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
+LM1.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
+RM2.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
+RM1.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
+vex::task::sleep( 2000 );
+LM1.stop();
+LM2.stop();
+RM1.stop();
+RM2.stop();
+LM2.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
+LM1.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
+RM2.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
+RM1.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
+vex::task::sleep( 1000 );
+LM1.stop();
+LM2.stop();
+RM1.stop();
+RM2.stop();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -150,11 +166,6 @@ else
 
      //Sleep the task for a short amount of time to prevent wasted resources.
    vex::task::sleep(20);
-
-
-
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
   }
   vexcodeInit();
 }
@@ -170,8 +181,4 @@ int main() {
   // Run the pre-autonomous function.
   pre_auton();
 
-  // Prevent main from exiting with an infinite loop.
-  while (true) {
-    wait(100, msec);
-  }
 }
