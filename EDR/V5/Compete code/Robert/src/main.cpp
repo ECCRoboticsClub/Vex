@@ -10,7 +10,7 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Robert        FORKLIFT                   
+// Robert        FORKLIFT
 
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
@@ -19,17 +19,16 @@
 #include <cmath>
 using namespace vex;
 
+vex::motor LM1 = vex::motor(vex::PORT20, false);
+vex::motor LM2 = vex::motor(vex::PORT10, false);
+vex::motor RM1 = vex::motor(vex::PORT12, true);
+vex::motor RM2 = vex::motor(vex::PORT1, true);
 
-vex::motor LM1 = vex::motor(vex::PORT20,false);
-vex::motor LM2 = vex::motor(vex::PORT10,false);
-vex::motor RM1 = vex::motor(vex::PORT12,true);
-vex::motor RM2 = vex::motor(vex::PORT1,true);
- 
 vex::controller Controller2 = vex::controller();
- 
-vex::motor Elevator = vex::motor(vex::PORT2,true);
-vex::motor Pivot = vex::motor(vex::PORT3,true);
-vex::motor Claw = vex::motor(vex::PORT4,true);
+
+vex::motor Elevator = vex::motor(vex::PORT2, true);
+vex::motor Pivot = vex::motor(vex::PORT3, true);
+vex::motor Claw = vex::motor(vex::PORT4, true);
 
 // A global instance of competition
 competition Competition;
@@ -65,14 +64,25 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
-
-
-
-
-
+  int slow=100;
+  LM2.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
+LM1.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
+RM2.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
+RM1.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
+vex::task::sleep( 2000 );
+LM1.stop();
+LM2.stop();
+RM1.stop();
+RM2.stop();
+LM2.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
+LM1.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
+RM2.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
+RM1.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
+vex::task::sleep( 1000 );
+LM1.stop();
+LM2.stop();
+RM1.stop();
+RM2.stop();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -96,52 +106,57 @@ void usercontrol(void) {
     // update your motors, etc.
     // ........................................................................
 
-      //drivetrain
- LM2.spin(vex::directionType::fwd, Controller2.Axis2.value() + Controller2.Axis4.value() - Controller2.Axis1.value(), vex::velocityUnits::pct);
-     LM1.spin(vex::directionType::fwd, Controller2.Axis2.value() + Controller2.Axis4.value() + Controller2.Axis1.value(), vex::velocityUnits::pct);
-     RM2.spin(vex::directionType::fwd, Controller2.Axis2.value() - Controller2.Axis4.value() + Controller2.Axis1.value(), vex::velocityUnits::pct);
-     RM1.spin(vex::directionType::fwd, Controller2.Axis2.value() - Controller2.Axis4.value() - Controller2.Axis1.value(), vex::velocityUnits::pct);
- int speed = 100;
- int slow=15;
- //lift
- if(Controller2.ButtonL2.pressing()){
-   Elevator.spin(vex::directionType::fwd,speed,vex::velocityUnits::pct);
- }
- else if(Controller2.ButtonL1.pressing()){
-   Elevator.spin(vex::directionType::rev,speed,vex::velocityUnits::pct);
- }
- else{
-   Elevator.stop(vex::brakeType::hold);
- }
-   
- 
- //pivot code
-  if(Controller2.ButtonR1.pressing()){
-   Pivot.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
- }
-  else if(Controller2.ButtonR2.pressing()){
-   Pivot.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
- }
-  else{
-   Pivot.stop(vex::brakeType::hold);
- }
+    // drivetrain
+    LM2.spin(vex::directionType::fwd,
+             Controller2.Axis2.value() + Controller2.Axis4.value() -
+                 Controller2.Axis1.value(),
+             vex::velocityUnits::pct);
+    LM1.spin(vex::directionType::fwd,
+             Controller2.Axis2.value() + Controller2.Axis4.value() +
+                 Controller2.Axis1.value(),
+             vex::velocityUnits::pct);
+    RM2.spin(vex::directionType::fwd,
+             Controller2.Axis2.value() - Controller2.Axis4.value() +
+                 Controller2.Axis1.value(),
+             vex::velocityUnits::pct);
+    RM1.spin(vex::directionType::fwd,
+             Controller2.Axis2.value() - Controller2.Axis4.value() -
+                 Controller2.Axis1.value(),
+             vex::velocityUnits::pct);
+    int speed = 100;
+    int slow = 15;
+    // lift
+    if (Controller2.ButtonL2.pressing()) {
+      Elevator.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
+    } else if (Controller2.ButtonL1.pressing()) {
+      Elevator.spin(vex::directionType::rev, speed, vex::velocityUnits::pct);
+    } else {
+      Elevator.stop(vex::brakeType::hold);
+    }
 
- //claw code
-if(Controller2.ButtonLeft.pressing()){
-     Claw.spin(vex::directionType::fwd,speed,vex::velocityUnits::pct);
- }
- else if(Controller2.ButtonRight.pressing()){
-   Claw.spin(vex::directionType::rev,speed,vex::velocityUnits::pct);
- }
- else{
-   Claw.stop(vex::brakeType::hold);
- }
+    // pivot code
+    if (Controller2.ButtonR1.pressing()) {
+      Pivot.spin(vex::directionType::fwd, slow, vex::velocityUnits::pct);
+    } else if (Controller2.ButtonR2.pressing()) {
+      Pivot.spin(vex::directionType::rev, slow, vex::velocityUnits::pct);
+    } else {
+      Pivot.stop(vex::brakeType::hold);
+    }
 
- 
-   vex::task::sleep(20); //Sleep the task for a short amount of time to prevent wasted resources.
- }
- vexcodeInit();
- }
+    // claw code
+    if (Controller2.ButtonLeft.pressing()) {
+      Claw.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
+    } else if (Controller2.ButtonRight.pressing()) {
+      Claw.spin(vex::directionType::rev, speed, vex::velocityUnits::pct);
+    } else {
+      Claw.stop(vex::brakeType::hold);
+    }
+
+    vex::task::sleep(20); // Sleep the task for a short amount of time to
+                          // prevent wasted resources.
+  }
+  vexcodeInit();
+}
 
 //     wait(20, msec); // Sleep the task for a short amount of time to
 //                     // prevent wasted resources.
