@@ -6,35 +6,23 @@
 /*    Description:  Competition Template                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
 // Robert        FORKLIFT
-
 // ---- END VEXCODE CONFIGURED DEVICES ----
-
 #include "vex.h"
+#include "autonomousRobert.h"
+#include "userRobert.h"
+//#include "displayRobert.h"
+#include "robot-config.h"
 #include <algorithm>
 #include <cmath>
 using namespace vex;
-
-vex::motor LM1 = vex::motor(vex::PORT20, false);
-vex::motor LM2 = vex::motor(vex::PORT10, false);
-vex::motor RM1 = vex::motor(vex::PORT12, true);
-vex::motor RM2 = vex::motor(vex::PORT1, true);
-
-vex::controller Controller2 = vex::controller();
-
-vex::motor Elevator = vex::motor(vex::PORT2, true);
-vex::motor Pivot = vex::motor(vex::PORT3, true);
-vex::motor Claw = vex::motor(vex::PORT4, true);
-
+void controllerPID(double targetVal, double compareVal);
 // A global instance of competition
 competition Competition;
-
 // define your global instances of motors and other devices here
-
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
 /*                                                                           */
@@ -44,15 +32,12 @@ competition Competition;
 /*  function is only called once after the V5 has been powered on and        */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
-
 void pre_auton(void) {
-  // Initializing Robot Configuration. DO NOT REMOVE!
-  vexcodeInit();
-
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
+// Initializing Robot Configuration. DO NOT REMOVE!
+vexcodeInit();
+// All activities that occur before the competition starts
+// Example: clearing encoders, setting servo positions, ...
 }
-
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -62,29 +47,10 @@ void pre_auton(void) {
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
-
 void autonomous(void) {
-  int slow=100;
-  LM2.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
-LM1.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
-RM2.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
-RM1.spin(vex::directionType::rev,slow,vex::velocityUnits::pct);
-vex::task::sleep( 2000 );
-LM1.stop();
-LM2.stop();
-RM1.stop();
-RM2.stop();
-LM2.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
-LM1.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
-RM2.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
-RM1.spin(vex::directionType::fwd,slow,vex::velocityUnits::pct);
-vex::task::sleep( 1000 );
-LM1.stop();
-LM2.stop();
-RM1.stop();
-RM2.stop();
-}
 
+autonomousRobert newRobert(LM1,LM11,LM2,LM21, RM1, RM11, RM2, RM21);
+}
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              User Control Task                            */
@@ -95,87 +61,127 @@ RM2.stop();
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+
 void usercontrol(void) {
-  // User control code here, inside the loop
-  while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
+// User control code here, inside the loop
+while (1) {
+  // This is the main execution loop for the user control program.
+  // Each time through the loop your program should update motor + servo
+  // values based on feedback from the joysticks.
+  // ........................................................................
+  // ........................................................................
+//displayRobert robertController(LM1,LM11,LM2,LM21, RM1, RM11, RM2, RM21, Elevator, Elevator1, Elevator2, Controller1 );
+userRobert robertControl(LM1,LM11,LM2,LM21, RM1, RM11, RM2, RM21, Elevator, Elevator1, Elevator2, Controller1 );
 
-    // drivetrain
-    LM2.spin(vex::directionType::fwd,
-             Controller2.Axis2.value() + Controller2.Axis4.value() -
-                 Controller2.Axis1.value(),
-             vex::velocityUnits::pct);
-    LM1.spin(vex::directionType::fwd,
-             Controller2.Axis2.value() + Controller2.Axis4.value() +
-                 Controller2.Axis1.value(),
-             vex::velocityUnits::pct);
-    RM2.spin(vex::directionType::fwd,
-             Controller2.Axis2.value() - Controller2.Axis4.value() +
-                 Controller2.Axis1.value(),
-             vex::velocityUnits::pct);
-    RM1.spin(vex::directionType::fwd,
-             Controller2.Axis2.value() - Controller2.Axis4.value() -
-                 Controller2.Axis1.value(),
-             vex::velocityUnits::pct);
-    int speed = 100;
-    int slow = 15;
-    // lift
-    if (Controller2.ButtonL2.pressing()) {
-      Elevator.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-    } else if (Controller2.ButtonL1.pressing()) {
-      Elevator.spin(vex::directionType::rev, speed, vex::velocityUnits::pct);
-    } else {
-      Elevator.stop(vex::brakeType::hold);
-    }
-
-    // pivot code
-    if (Controller2.ButtonR1.pressing()) {
-      Pivot.spin(vex::directionType::fwd, slow, vex::velocityUnits::pct);
-    } else if (Controller2.ButtonR2.pressing()) {
-      Pivot.spin(vex::directionType::rev, slow, vex::velocityUnits::pct);
-    } else {
-      Pivot.stop(vex::brakeType::hold);
-    }
-
-    // claw code
-    if (Controller2.ButtonLeft.pressing()) {
-      Claw.spin(vex::directionType::fwd, speed, vex::velocityUnits::pct);
-    } else if (Controller2.ButtonRight.pressing()) {
-      Claw.spin(vex::directionType::rev, speed, vex::velocityUnits::pct);
-    } else {
-      Claw.stop(vex::brakeType::hold);
-    }
-
-    vex::task::sleep(20); // Sleep the task for a short amount of time to
-                          // prevent wasted resources.
-  }
-  vexcodeInit();
 }
-
+vexcodeInit();
+}
 //     wait(20, msec); // Sleep the task for a short amount of time to
 //                     // prevent wasted resources.
 //   }
 // }
-
 //
 // Main will set up the competition functions and callbacks.
 //
 int main() {
-  // Set up callbacks for autonomous and driver control periods.
-  Competition.autonomous(autonomous);
-  Competition.drivercontrol(usercontrol);
+// Set up callbacks for autonomous and driver control periods.
+vexcodeInit();
+Competition.autonomous(autonomous);
+Competition.drivercontrol(usercontrol);
 
-  // Run the pre-autonomous function.
-  pre_auton();
+//PID STUFF 
+/*
+double targetVal = LM1.power(vex::powerUnits::watt);
+double compareVal = LM11.power(vex::powerUnits::watt);
+int powerLevel = 100;
+  controllerPID(targetVal, compareVal);
+      while(true)
+      {
+        while(LM1.power(vex::powerUnits::watt) <=500)
+        {
 
-  // Prevent main from exiting with an infinite loop.
-  while (true) {
-    wait(100, msec);
-  }
+// 
+//     LM1.efficiency(vex::percentUnits::pct)
+// dps pct rpm 
+//     LM1.velocity(vex::velocityUnits::rpm) 
+// def rev raw
+// LM1.rotation(vex::rotationUnits::rev)
+// Nm InLb 
+// LM1.torque(vex::torqueUnits::Nm)
+// 
+// LM1.current(vex::currentUnits::amp) 
+// 
+
+// LM1.power(vex::powerUnits::watt) 
+// pct farenheit 
+// LM1.temperature(vex::temperatureUnits::fahrenheit)
+
+        
+         int  pidtoggle = 1;
+          //motor[righty]=100;
+          int powerLevel = 100;
+          LM1.setVelocity(powerLevel,rpm);
+          LM11.setVelocity(powerLevel,rpm);
+          pidtoggle = 0;
+        }
+        powerLevel = 0;
+        LM1.setVelocity(powerLevel,rpm);
+        LM11.setVelocity(powerLevel,rpm);
+      }
+// END PID STUFF 
+*/
+
+//TESTING CONTROLLER DISPLAY
+
+// Run the pre-autonomous function.
+pre_auton();
+// Prevent main from exiting with an infinite loop.
+while (true) {
+  wait(100, msec);
+}
+}
+
+
+void controllerPID(double targetVal, double compareVal)
+{
+//main goal - current status towards goal
+// ex battery at 20% - current status
+// main goal - battery at 100%
+// error 100-20 =70
+//double sensorVal = ;
+double error;
+double prevError;
+//proportional,integral, derivative constant
+double kP;
+double kI;
+double kD;
+
+double integral;
+double derivative;
+double power;
+
+while(true)
+{
+
+//error = targetVal - sensorVal;
+integral = integral + error; 
+//if (error = 0 || error > targetVal)
+// integral =0; //if needs to hold its position, ex arm lifting weight dont use this only for whee
+ if ((error = 0) || (error > targetVal))
+ {
+  integral = 0;
+ }
+if (error <= -1)
+ {
+  integral = 0;
+ }
+//  if (error is outside useful range) 
+//  integral = 0;
+prevError = 0;
+derivative =  error - prevError;
+prevError = error;
+power = error*kP + integral*kI + derivative*kD;
+vex::task::sleep(15);//dT
+
+}
 }
